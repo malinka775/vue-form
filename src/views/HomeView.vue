@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <main>
+  <main class='mt-20 text-3xl'>
     Hello
   </main>
 </template>
