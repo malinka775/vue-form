@@ -6,6 +6,6 @@
 
 <style scoped>
 .base-card {
-  @apply border-purple-950 border-2 rounded-xl p-12 max-w-2xl shadow-lg
+  @apply border-blue-700 border-2 rounded-xl p-8 shadow-xl
 }
 </style>
