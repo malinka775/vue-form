@@ -29,6 +29,9 @@
 <script setup>
   import { reactive } from 'vue';
   import PasswordInput from '../components/PasswordInput.vue';
+  import { useUserStore } from '../stores/user';
+
+  const store = useUserStore();
 
   const inputs = reactive({
     phone: '',
@@ -71,10 +74,18 @@
       }
     }
   }
-  const submitForm = () => {
+  const submitForm = async () => {
     validateForm();
     console.log(inputs);
-    //TODO: send request if form is valid
+    console.log('useUserStore', store);
+    await store.registerUser({
+      email: inputs.email,
+      phone: inputs.phone,
+      password: inputs.password,
+      repassword: inputs.passwordConfirmed,
+    })
+    console.log('request is sent!');
+    clearForm();
   }
 
   const clearErrors = () => {
@@ -83,6 +94,11 @@
     }
   }
 
+  const clearForm = () => {
+    for(let key in inputs) {
+      inputs[key] = '';
+    }
+  }
 </script>
 
 <style scoped>
