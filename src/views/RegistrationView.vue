@@ -4,22 +4,22 @@
     <div class="form-control">
       <label for="phone" class="form-label">Phone number</label>
       <base-input type="phone" id="phone" v-model="inputs.phone"/>
-      <p>{{ errors.phone }}</p>
+      <p class="form-error">{{ errors.phone }}</p>
     </div>
     <div class="form-control">
       <label for="email" class="form-label">Email</label>
       <base-input type="email" id="email" v-model="inputs.email"/>
-      <p>{{ errors.email }}</p>
+      <p class="form-error">{{ errors.email }}</p>
     </div>
     <div class="form-control">
       <label for="password" class="form-label">Password</label>
       <PasswordInput id="password" v-model="inputs.password"/>
-      <p>{{ errors.password }}</p>
+      <p class="form-error">{{ errors.password }}</p>
     </div>
     <div class="form-control">
       <label for="passwordConfirm" class="form-label">Confirm Your Password</label>
       <PasswordInput id="passwordConfirm" v-model="inputs.passwordConfirmed"/>
-      <p>{{ errors.passwordConfirmed }}</p>
+      <p class="form-error">{{ errors.passwordConfirmed }}</p>
     </div>
     <base-button class="mt-16 ml-auto block">Confirm</base-button>
   </form>
@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-  import { reactive } from 'vue';
+  import { ref, reactive, watch } from 'vue';
   import PasswordInput from '../components/PasswordInput.vue';
   import { useUserStore } from '../stores/user';
 
@@ -45,6 +45,7 @@
     password: null,
     passwordConfirmed: null,
   });
+  const wasConfirmPushed = ref(false);
   
   const validateForm = () => {
     clearErrors()
@@ -61,23 +62,38 @@
     }
 
     if(!isEmailValid) {
-      errors.email = 'Please enter a valid email';
+      errors.email = 'Please enter a valid email.';
+    }
+
+    if(inputs.password.length < 8) {
+      errors.password = 'Your password should be at least 8 characters long.'
     }
 
     if(inputs.password !== inputs.passwordConfirmed) {
-      errors.passwordConfirmed = 'Input does not match your password'
+      errors.passwordConfirmed = 'Input does not match your password.'
     }
 
     for(let key in inputs) {
       if(inputs[key].length === 0) {
-        errors[key] = `This field can not be empty`
+        errors[key] = 'This field can not be empty.'
       }
     }
   }
   const submitForm = async () => {
+    wasConfirmPushed.value = true;
     validateForm();
+
     console.log(inputs);
-    console.log('useUserStore', store);
+    let isValid = true;
+    for(let key in errors) {
+      if (errors[key] !== null) {
+        isValid = false
+      }
+    }
+    if (!isValid) {
+      return;
+    }
+    
     await store.registerUser({
       email: inputs.email,
       phone: inputs.phone,
@@ -98,7 +114,12 @@
     for(let key in inputs) {
       inputs[key] = '';
     }
+    wasConfirmPushed.value = false;
   }
+  
+  watch(inputs, () => {
+    wasConfirmPushed.value && validateForm()
+  })
 </script>
 
 <style scoped>
@@ -109,5 +130,9 @@
 
   .form-label {
     @apply font-medium
+  }
+
+  .form-error {
+    @apply text-red-500 text-sm
   }
 </style>
