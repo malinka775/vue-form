@@ -1,11 +1,5 @@
 <template>
-  <div class="base-card">
-    <slot/>
+  <div class="rounded-xl border-2 border-blue-700 p-8 shadow-xl">
+    <slot />
   </div>
 </template>
-
-<style scoped>
-.base-card {
-  @apply border-blue-700 border-2 rounded-xl p-8 shadow-xl
-}
-</style>
