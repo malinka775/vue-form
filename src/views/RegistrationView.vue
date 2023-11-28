@@ -85,14 +85,11 @@ const validateForm = () => {
   clearErrors()
   const phoneRegExp = /^[+]?[0-9]([-|\s]?[0-9]{3}){2}([-|\s]?[0-9]{2}){2}$/
   const isPhoneValid = phoneRegExp.test(inputs.phone)
-  console.log('is phone', inputs.phone, 'valid?', isPhoneValid)
 
   const emailRegExp = /^\w[-\w\.]*?@[a-zA-Z-\d]+\.[a-zA-Z-]{2,10}$/
   const isEmailValid = emailRegExp.test(inputs.email)
-  console.log('is email', inputs.email, 'valid?', isEmailValid)
 
   if (mode.value === FORM_MODES.SIGNUP.name && !isPhoneValid) {
-    console.log('hi from error setting to phone')
     errors.phone = 'Please enter a valid phone number!'
   }
 
@@ -119,7 +116,6 @@ const validateForm = () => {
       errors[key] = 'This field can not be empty.'
     }
   }
-  console.log('errors', errors)
 }
 const submitForm = async () => {
   wasConfirmPushed.value = true

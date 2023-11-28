@@ -31,7 +31,6 @@ const isVisible = ref(false)
 
 const toggleIsVisible = () => {
   isVisible.value = !isVisible.value
-  console.log('isVisible.value is', isVisible.value)
 }
 </script>
 

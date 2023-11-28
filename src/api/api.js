@@ -11,9 +11,7 @@ const axiosInstance = axios.create(axiosConfig)
 
 async function registerUser(userData) {
   try {
-    console.log('Sending data...')
     const response = await axiosInstance.post('/registration', userData)
-
     console.log('response is', response)
   } catch (e) {
     if (e.response) {
@@ -27,9 +25,7 @@ async function registerUser(userData) {
 
 async function authUser(userData) {
   try {
-    console.log('Sending data...')
     const response = await axiosInstance.post('/login', userData)
-
     console.log('response is', response)
   } catch (e) {
     if (e.response) {
