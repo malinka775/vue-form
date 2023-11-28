@@ -11,6 +11,6 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 
-BaseComponents.forEach(cmp => app.component(cmp.name, cmp))
+BaseComponents.forEach((cmp) => app.component(cmp.name, cmp))
 
 app.mount('#app')
