@@ -1,9 +1,9 @@
-<script setup>
-import RegistrationView from './RegistrationView.vue'
-</script>
-
 <template>
-  <main class="mt-20 text-3xl">
-    <registration-view></registration-view>
-  </main>
+  <SectionContainer class="pt-10">
+    Hello! You might want to check the <router-link to="/auth">Login</router-link> page.
+  </SectionContainer>
 </template>
+
+<script setup>
+import SectionContainer from '../components/SectionContainer.vue'
+</script>

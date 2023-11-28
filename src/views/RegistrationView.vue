@@ -1,39 +1,43 @@
 <template>
-  <base-card class="m-auto max-w-xl">
-    <form @submit.prevent="submitForm">
-      <div class="form-control">
-        <label for="phone" class="form-label">Phone number</label>
-        <base-input type="phone" id="phone" v-model="inputs.phone" />
-        <p class="form-error">{{ errors.phone }}</p>
-      </div>
-      <div class="form-control">
-        <label for="email" class="form-label">Email</label>
-        <base-input type="email" id="email" v-model="inputs.email" />
-        <p class="form-error">{{ errors.email }}</p>
-      </div>
-      <div class="form-control">
-        <label for="password" class="form-label">Password</label>
-        <PasswordInput id="password" v-model="inputs.password" />
-        <p class="form-error">{{ errors.password }}</p>
-      </div>
-      <div class="form-control">
-        <label for="passwordConfirm" class="form-label">Confirm Your Password</label>
-        <PasswordInput id="passwordConfirm" v-model="inputs.passwordConfirmed" />
-        <p class="form-error">{{ errors.passwordConfirmed }}</p>
-      </div>
-      <base-button class="ml-auto mt-16 block">Confirm</base-button>
-    </form>
-  </base-card>
-  <base-modal v-if="requestError" mode="error" :title="requestError" @close="clearRequestError">
-    <p>We are sorry. Something went wrong while registering.</p>
-    <p>Please, try again later.</p>
-  </base-modal>
+  <SectionContainer class="pt-10">
+    <base-card class="m-auto max-w-xl">
+      <form @submit.prevent="submitForm">
+        <div class="mb-6 text-base">
+          <label for="phone" class="font-medium">Phone number</label>
+          <base-input type="phone" id="phone" v-model="inputs.phone" />
+          <p class="text-sm text-red-500">{{ errors.phone }}</p>
+        </div>
+        <div class="mb-6 text-base">
+          <label for="email" class="font-medium">Email</label>
+          <base-input type="email" id="email" v-model="inputs.email" />
+          <p class="text-sm text-red-500">{{ errors.email }}</p>
+        </div>
+        <div class="mb-6 text-base">
+          <label for="password" class="font-medium">Password</label>
+          <PasswordInput id="password" v-model="inputs.password" />
+          <p class="text-sm text-red-500">{{ errors.password }}</p>
+        </div>
+        <div class="mb-6 text-base">
+          <label for="passwordConfirm" class="font-medium">Confirm Your Password</label>
+          <PasswordInput id="passwordConfirm" v-model="inputs.passwordConfirmed" />
+          <p class="text-sm text-red-500">{{ errors.passwordConfirmed }}</p>
+        </div>
+        <base-button class="ml-auto mt-16 block">Confirm</base-button>
+      </form>
+    </base-card>
+    <base-modal v-if="requestError" mode="error" :title="requestError" @close="clearRequestError">
+      <p>We are sorry. Something went wrong while registering.</p>
+      <p>Please, try again later.</p>
+    </base-modal>
+  </SectionContainer>
 </template>
 
 <script setup>
 import { ref, reactive, watch } from 'vue'
-import PasswordInput from '../components/PasswordInput.vue'
 import registerUser from '../api/api.js'
+
+import PasswordInput from '../components/PasswordInput.vue'
+import SectionContainer from '../components/SectionContainer.vue'
 
 const inputs = reactive({
   phone: '',
@@ -86,7 +90,6 @@ const submitForm = async () => {
   wasConfirmPushed.value = true
   validateForm()
 
-  console.log(inputs)
   let isValid = true
   for (let key in errors) {
     if (errors[key] !== null) {
@@ -136,17 +139,3 @@ watch(inputs, () => {
   wasConfirmPushed.value && validateForm()
 })
 </script>
-
-<style scoped>
-.form-control {
-  @apply mb-6 text-base;
-}
-
-.form-label {
-  @apply font-medium;
-}
-
-.form-error {
-  @apply text-sm text-red-500;
-}
-</style>

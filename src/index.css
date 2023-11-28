@@ -13,3 +13,7 @@
     @apply text-lg font-semibold;
   }
 }
+
+.router-link-active {
+  @apply border-b-2 border-white text-white;
+}
