@@ -1,8 +1,8 @@
 <template>
   <SectionContainer class="pt-10">
     <BaseCard class="text-center">
-      Hello! You might want to start with
-      <router-link to="/auth" class="text-blue-700">Sign in</router-link> page.
+      <p>This page doesn't seem to exist.</p>
+      <p>Check out the <router-link to="/" class="text-blue-700">Home</router-link> page.</p>
     </BaseCard>
   </SectionContainer>
 </template>
