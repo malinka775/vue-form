@@ -1,6 +1,6 @@
 <template>
   <div
-    class="absolute top-0 flex h-screen w-full items-center justify-center bg-gray-900 bg-opacity-40"
+    class="absolute left-0 top-0 flex h-screen w-full items-center justify-center bg-gray-900 bg-opacity-40 backdrop-blur-[2px]"
     teleport="body"
   >
     <div

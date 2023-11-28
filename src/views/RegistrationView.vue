@@ -2,7 +2,7 @@
   <SectionContainer class="pt-10">
     <base-card class="m-auto max-w-xl">
       <form @submit.prevent="submitForm">
-        <div class="mb-6 text-base">
+        <div v-if="mode === FORM_MODES.SIGNUP.name" class="mb-6 text-base">
           <label for="phone" class="font-medium">Phone number</label>
           <base-input type="phone" id="phone" v-model="inputs.phone" />
           <p class="text-sm text-red-500">{{ errors.phone }}</p>
@@ -17,16 +17,25 @@
           <PasswordInput id="password" v-model="inputs.password" />
           <p class="text-sm text-red-500">{{ errors.password }}</p>
         </div>
-        <div class="mb-6 text-base">
+        <div class="mb-6 text-base" v-if="mode === FORM_MODES.SIGNUP.name">
           <label for="passwordConfirm" class="font-medium">Confirm Your Password</label>
           <PasswordInput id="passwordConfirm" v-model="inputs.passwordConfirmed" />
           <p class="text-sm text-red-500">{{ errors.passwordConfirmed }}</p>
         </div>
+        <p>
+          {{ FORM_MODES[mode].text }}
+          <b class="cursor-pointer hover:text-blue-700" @click="toggleFormMode">{{
+            FORM_MODES[mode].cta
+          }}</b>
+        </p>
         <base-button class="ml-auto mt-16 block">Confirm</base-button>
       </form>
     </base-card>
     <base-modal v-if="requestError" mode="error" :title="requestError" @close="clearRequestError">
-      <p>We are sorry. Something went wrong while registering.</p>
+      <p>
+        We are sorry. Something went wrong while
+        {{ mode === FORM_MODES.SIGNUP.name ? 'registering' : 'logging in' }}.
+      </p>
       <p>Please, try again later.</p>
     </base-modal>
   </SectionContainer>
@@ -34,7 +43,7 @@
 
 <script setup>
 import { ref, reactive, watch } from 'vue'
-import registerUser from '../api/api.js'
+import { registerUser, authUser } from '../api/api.js'
 
 import PasswordInput from '../components/PasswordInput.vue'
 import SectionContainer from '../components/SectionContainer.vue'
@@ -45,6 +54,7 @@ const inputs = reactive({
   password: '',
   passwordConfirmed: ''
 })
+
 const errors = reactive({
   phone: null,
   email: null,
@@ -53,6 +63,23 @@ const errors = reactive({
 })
 const requestError = ref(null)
 const wasConfirmPushed = ref(false)
+const FORM_MODES = {
+  SIGNUP: {
+    name: 'SIGNUP',
+    cta: 'Log in instead',
+    text: 'Already have an account?'
+  },
+  LOGIN: {
+    name: 'LOGIN',
+    cta: 'Go to registration',
+    text: "Don't have an account?"
+  }
+}
+const mode = ref('SIGNUP')
+
+const toggleFormMode = () => {
+  mode.value = mode.value === FORM_MODES.LOGIN.name ? FORM_MODES.SIGNUP.name : FORM_MODES.LOGIN.name
+}
 
 const validateForm = () => {
   clearErrors()
@@ -64,7 +91,8 @@ const validateForm = () => {
   const isEmailValid = emailRegExp.test(inputs.email)
   console.log('is email', inputs.email, 'valid?', isEmailValid)
 
-  if (!isPhoneValid) {
+  if (mode.value === FORM_MODES.SIGNUP.name && !isPhoneValid) {
+    console.log('hi from error setting to phone')
     errors.phone = 'Please enter a valid phone number!'
   }
 
@@ -76,15 +104,22 @@ const validateForm = () => {
     errors.password = 'Your password should be at least 8 characters long.'
   }
 
-  if (inputs.password !== inputs.passwordConfirmed) {
+  if (mode.value === FORM_MODES.SIGNUP.name && inputs.password !== inputs.passwordConfirmed) {
     errors.passwordConfirmed = 'Input does not match your password.'
   }
 
   for (let key in inputs) {
     if (inputs[key].length === 0) {
+      if (
+        mode.value === FORM_MODES.LOGIN.name &&
+        (key === 'passwordConfirmed' || key === 'phone')
+      ) {
+        continue
+      }
       errors[key] = 'This field can not be empty.'
     }
   }
+  console.log('errors', errors)
 }
 const submitForm = async () => {
   wasConfirmPushed.value = true
@@ -101,13 +136,19 @@ const submitForm = async () => {
   }
 
   try {
-    await registerUser({
-      email: inputs.email,
-      phone: inputs.phone,
-      password: inputs.password,
-      repassword: inputs.passwordConfirmed
-    })
-
+    if (mode.value === FORM_MODES.SIGNUP.name) {
+      await registerUser({
+        email: inputs.email,
+        phone: inputs.phone,
+        password: inputs.password,
+        repassword: inputs.passwordConfirmed
+      })
+    } else {
+      await authUser({
+        email: inputs.email,
+        password: inputs.password
+      })
+    }
     clearForm()
   } catch (e) {
     //Clear just passwords

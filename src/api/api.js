@@ -25,4 +25,20 @@ async function registerUser(userData) {
   }
 }
 
-export default registerUser
+async function authUser(userData) {
+  try {
+    console.log('Sending data...')
+    const response = await axiosInstance.post('/login', userData)
+
+    console.log('response is', response)
+  } catch (e) {
+    if (e.response) {
+      console.log(e.response)
+    } else {
+      console.log(e.message || 'Something went wrong. Please try again later')
+    }
+    throw new Error(e.message)
+  }
+}
+
+export { registerUser, authUser }
